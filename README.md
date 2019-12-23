@@ -13,13 +13,11 @@
 ```   
 5. 修改docker-compose.yml，指定IP
 
-6. 修改Dockerfile文件，替换username和password，其中下载berkeley-db需要oracle的账号密码
-
-7. 执行docker-compose命令，linux环境下需要指定使用docker-compose-linux.yml文件
+6. 执行docker-compose命令，linux环境下需要指定使用docker-compose-linux.yml文件
 ```
  docker-compose up -d 或者 docker-compose -f docker-compose-linux.yml up -d
 ```
- 至此一个单机版的fastdfs文件系统已经搭建完成，下面测试fastdfs是否搭建成功
+7. 至此一个单机版的fastdfs文件系统已经搭建完成，下面测试fastdfs是否搭建成功
 ```
  docker exec -it fastdfs /bin/bash 
 
@@ -44,9 +42,9 @@
 ```
  fdfs_monitor /etc/fdfs/client.conf
 ```
- 该镜像已经上传到Docker Hub，也可跳过镜像构建步骤，直接从Docker Hub上拉取，linux环境下可用如下命令拉取镜像后直接运行容器
+ 该镜像已经上传到公开镜像仓库，也可跳过镜像构建步骤，直接从Docker Hub或者阿里云容器镜像仓库上拉取，linux环境下可用如下命令拉取镜像后直接运行容器
 ```
- docker pull qbanxiaoli/fastdfs
+ docker pull qbanxiaoli/fastdfs 或者 docker pull registry.cn-hangzhou.aliyuncs.com/qbanxiaoli/fastdfs
 
  docker run -d --restart=always --net=host --name=fastdfs -e IP=192.168.0.105 -v ～/fastdfs:/var/local qbanxiaoli/fastdfs
 ```

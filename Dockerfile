@@ -8,30 +8,30 @@ RUN    apk update \
         && apk add --no-cache --virtual .build-deps bash gcc libc-dev make openssl-dev pcre-dev zlib-dev linux-headers curl gnupg libxslt-dev gd-dev geoip-dev git wget
 
 # 复制工具
-#ADD soft ${HOME}
-#
-#RUN cd ${HOME} \
-#    && tar xvf libfastcommon-master.tar.gz \
-#    && tar xvf fastdfs-master.tar.gz \
-#    && tar xvf fastdfs-nginx-module-master.tar.gz \
-#    && tar xvf fastdht-master.tar.gz \
-#    && tar xvf nginx-1.15.3.tar.gz \
-#    && tar xvf db-18.1.32.tar.gz
+ADD soft ${HOME}
+
+RUN cd ${HOME} \
+    && tar xvf libfastcommon-master.tar.gz \
+    && tar xvf fastdfs-master.tar.gz \
+    && tar xvf fastdfs-nginx-module-master.tar.gz \
+    && tar xvf fastdht-master.tar.gz \
+    && tar xvf nginx-1.15.3.tar.gz \
+    && tar xvf db-18.1.32.tar.gz
 
 # 下载libfastcommon、fastdfs、fastdfs-nginx-module、fastdht、berkeley-db、nginx插件的源码
-RUN     cd ${HOME} \
-        && curl -L https://github.com/happyfish100/libfastcommon/archive/master.tar.gz -o libfastcommon-master.tar.gz \
-        && curl -L https://github.com/happyfish100/fastdfs/archive/master.tar.gz -o fastdfs-master.tar.gz \
-        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/master.tar.gz -o fastdfs-nginx-module-master.tar.gz \
-        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
-        && curl -L http://nginx.org/download/nginx-1.15.3.tar.gz -o nginx-1.15.3.tar.gz \
-        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
-        && tar xvf libfastcommon-master.tar.gz \
-        && tar xvf fastdfs-master.tar.gz \
-        && tar xvf fastdfs-nginx-module-master.tar.gz \
-        && tar xvf fastdht-master.tar.gz \
-        && tar xvf nginx-1.15.3.tar.gz \
-        && tar xvf db-18.1.32.tar.gz
+#RUN     cd ${HOME} \
+#        && curl -L https://github.com/happyfish100/libfastcommon/archive/master.tar.gz -o libfastcommon-master.tar.gz \
+#        && curl -L https://github.com/happyfish100/fastdfs/archive/master.tar.gz -o fastdfs-master.tar.gz \
+#        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/master.tar.gz -o fastdfs-nginx-module-master.tar.gz \
+#        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
+#        && curl -L http://nginx.org/download/nginx-1.15.3.tar.gz -o nginx-1.15.3.tar.gz \
+#        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
+#        && tar xvf libfastcommon-master.tar.gz \
+#        && tar xvf fastdfs-master.tar.gz \
+#        && tar xvf fastdfs-nginx-module-master.tar.gz \
+#        && tar xvf fastdht-master.tar.gz \
+#        && tar xvf nginx-1.15.3.tar.gz \
+#        && tar xvf db-18.1.32.tar.gz
 
 # 安装libfastcommon
 RUN     cd ${HOME}/libfastcommon-master/ \
