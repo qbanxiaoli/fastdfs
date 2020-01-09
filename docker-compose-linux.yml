@@ -7,8 +7,6 @@ services:
     restart: always
     container_name: fastdfs
     environment:
-      # 使用东八区的时间
-      TZ: Asia/Shanghai
       # nginx服务端口,默认80端口，可修改
       WEB_PORT: 80
       # tracker_server服务端口，默认22122端口，可修改

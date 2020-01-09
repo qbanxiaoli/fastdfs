@@ -100,6 +100,11 @@ RUN rm -rf ${HOME}/*
 RUN apk del .build-deps gcc libc-dev make openssl-dev linux-headers curl gnupg libxslt-dev gd-dev geoip-dev
 RUN apk add bash pcre-dev zlib-dev
 
+# 设置时区
+ENV TZ Asia/Shanghai
+RUN apk add -U tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # 配置启动脚本，在启动时中根据环境变量替换nginx端口、fastdfs端口
 # 默认nginx端口
 ENV WEB_PORT 80
