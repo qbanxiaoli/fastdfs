@@ -30,8 +30,6 @@ services:
 networks:
   fastdfs_net:
     driver: bridge
-    driver_opts:
-      parent: eth0
     ipam:
       config:
         - subnet: 192.168.0.0/24
