@@ -11,12 +11,14 @@ services:
       WEB_PORT: 80
       # tracker_server服务端口，默认22122端口，可修改
       FDFS_PORT: 22122
+      # storage_server服务端口，默认23000端口，可修改
+      STORAGE_PORT: 23000
       # fastdht服务端口，默认11411端口，可修改
       FDHT_PORT: 11411
       # docker所在的宿主机内网地址，默认使用eth0网卡的地址
       IP: 192.168.0.105
     volumes:
-      # 将本地目录映射到docker容器内的fastdfs数据存储目录，将fastdfs文件存储到主机上，以免每次重建docker容器，之前存储的文件就丢失了。
-      - ～/fastdfs:/var/local
+    # 将本地目录映射到docker容器内的fastdfs数据存储目录，将fastdfs文件存储到主机上，以免每次重建docker容器，之前存储的文件就丢失了。
+    - ～/fastdfs:/var/local
     # 网络模式为host，可不暴露端口，即直接使用宿主机的网络端口，只适用于linux系统
     network_mode: host

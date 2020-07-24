@@ -108,8 +108,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 配置启动脚本，在启动时中根据环境变量替换nginx端口、fastdfs端口
 # 默认nginx端口
 ENV WEB_PORT 80
-# 默认fastdfs端口
+# 默认track_server端口
 ENV FDFS_PORT 22122
+# 默认storage_server端口
+ENV STORAGE_PORT 23000
 # 默认fastdht端口
 ENV FDHT_PORT 11411
 # 创建启动脚本
@@ -120,10 +122,14 @@ sed -i \"s/http.server_port=.*$/http.server_port=\$WEB_PORT/g\" /etc/fdfs/storag
 if [ \"\$IP\" = \"\" ]; then \n\
     IP=\`ifconfig eth0 | grep inet | awk '{print \$2}'| awk -F: '{print \$2}'\`; \n\
 fi \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/\" /etc/fdfs/client.conf; \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/\" /etc/fdfs/storage.conf; \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/\" /etc/fdfs/mod_fastdfs.conf; \n\
+sed -i \"s/^port=.*$/port=\$FDFS_PORT/\" /etc/fdfs/tracker.conf; \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/client.conf; \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/storage.conf; \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/mod_fastdfs.conf; \n\
+sed -i \"s/^port=.*$/port=\$STORAGE_PORT/g\" /etc/fdfs/storage.conf; \n\
+sed -i \"s/^storage_server_port=.*$/storage_server_port=\$STORAGE_PORT/g\" /etc/fdfs/mod_fastdfs.conf; \n\
 sed -i \"s/^group0.*$/group0=\$IP:\$FDHT_PORT/\" /etc/fdht/fdht_servers.conf; \n\
+sed -i \"s/^port=.*$/port=\$FDHT_PORT/g\" /etc/fdht/fdhtd.conf; \n\
 sed -i \"4d\" /etc/fdht/fdht_servers.conf; \n\
 sed -i \"s/^check_file_duplicate=.*$/check_file_duplicate=1/g\" /etc/fdfs/storage.conf; \n\
 sed -i \"s/^keep_alive=.*$/keep_alive=1/g\" /etc/fdfs/storage.conf; \n\
