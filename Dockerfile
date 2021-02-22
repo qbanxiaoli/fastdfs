@@ -1,5 +1,5 @@
 # 使用超小的Linux镜像alpine
-FROM alpine
+FROM alpine:3.12
 
 ENV HOME /root
 
@@ -122,15 +122,26 @@ sed -i \"s/http.server_port=.*$/http.server_port=\$WEB_PORT/g\" /etc/fdfs/storag
 if [ \"\$IP\" = \"\" ]; then \n\
     IP=\`ifconfig eth0 | grep inet | awk '{print \$2}'| awk -F: '{print \$2}'\`; \n\
 fi \n\
+IP=(\${IP//,/ }); \n\
+sed -i '/^group/,\$d' /etc/fdht/fdht_servers.conf; \n\
+sed -i '\$a\group_count = '\${#IP[*]}'' /etc/fdht/fdht_servers.conf; \n\
+for ((i=0; i<\${#IP[*]}; i++)) \n\
+  do \n\
+    sed -i '\$a\group'\${i}'='\${IP[i]}':'\$FDHT_PORT'' /etc/fdht/fdht_servers.conf; \n\
+  done \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\${IP[0]}:\$FDFS_PORT/g\" /etc/fdfs/client.conf; \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\${IP[0]}:\$FDFS_PORT/g\" /etc/fdfs/storage.conf; \n\
+sed -i \"s/^tracker_server=.*$/tracker_server=\${IP[0]}:\$FDFS_PORT/g\" /etc/fdfs/mod_fastdfs.conf; \n\
+for ((i=1; i<\${#IP[*]}; i++)) \n\
+  do \n\
+    sed -i \"/tracker_server=\${IP[i-1]}:\$FDFS_PORT/atracker_server=\${IP[i]}:\$FDFS_PORT\" /etc/fdfs/client.conf; \n\
+    sed -i \"/tracker_server=\${IP[i-1]}:\$FDFS_PORT/atracker_server=\${IP[i]}:\$FDFS_PORT\" /etc/fdfs/storage.conf; \n\
+    sed -i \"/tracker_server=\${IP[i-1]}:\$FDFS_PORT/atracker_server=\${IP[i]}:\$FDFS_PORT\" /etc/fdfs/mod_fastdfs.conf; \n\
+  done \n\
 sed -i \"s/^port=.*$/port=\$FDFS_PORT/\" /etc/fdfs/tracker.conf; \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/client.conf; \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/storage.conf; \n\
-sed -i \"s/^tracker_server=.*$/tracker_server=\$IP:\$FDFS_PORT/g\" /etc/fdfs/mod_fastdfs.conf; \n\
 sed -i \"s/^port=.*$/port=\$STORAGE_PORT/g\" /etc/fdfs/storage.conf; \n\
 sed -i \"s/^storage_server_port=.*$/storage_server_port=\$STORAGE_PORT/g\" /etc/fdfs/mod_fastdfs.conf; \n\
-sed -i \"s/^group0.*$/group0=\$IP:\$FDHT_PORT/\" /etc/fdht/fdht_servers.conf; \n\
 sed -i \"s/^port=.*$/port=\$FDHT_PORT/g\" /etc/fdht/fdhtd.conf; \n\
-sed -i \"4d\" /etc/fdht/fdht_servers.conf; \n\
 sed -i \"s/^check_file_duplicate=.*$/check_file_duplicate=1/g\" /etc/fdfs/storage.conf; \n\
 sed -i \"s/^keep_alive=.*$/keep_alive=1/g\" /etc/fdfs/storage.conf; \n\
 sed -i \"s/^##include \/home\/yuqing\/fastdht\/conf\/fdht_servers.conf/#include \/etc\/fdht\/fdht_servers.conf/g\" /etc/fdfs/storage.conf; \n\

@@ -1,5 +1,5 @@
-# FastDFS+FastDHT单机版
-使用docker-compose创建FastDFS+FastDHT单机版服务(tracker,storage,fastdht,nginx)
+# FastDFS+FastDHT(单机+集群版)
+使用docker-compose创建FastDFS+FastDHT(单机+集群版)服务(tracker,storage,fastdht,nginx)
 ## 搭建教程
 1. 安装docker和docker-compose  
 2. 安装git    
@@ -11,13 +11,13 @@
 ```
  cd fastdfs
 ```   
-5. 修改docker-compose.yml，指定IP
+5. 修改docker-compose.yml，指定IP(多个IP集群用逗号分割)
 
 6. 执行docker-compose命令，linux环境下需要指定使用docker-compose-linux.yml文件
 ```
  docker-compose up -d 或者 docker-compose -f docker-compose-linux.yml up -d
 ```
-7. 至此一个单机版的fastdfs文件系统已经搭建完成，下面测试fastdfs是否搭建成功
+7. 至此fastdfs文件系统已经搭建完成，下面测试是否成功
 ```
  docker exec -it fastdfs /bin/bash 
 
