@@ -15,7 +15,7 @@ RUN cd ${HOME} \
     && tar xvf fastdfs-master.tar.gz \
     && tar xvf fastdfs-nginx-module-master.tar.gz \
     && tar xvf fastdht-master.tar.gz \
-    && tar xvf nginx-1.19.1.tar.gz \
+    && tar xvf nginx-1.20.1.tar.gz \
     && tar xvf db-18.1.32.tar.gz
 
 # 下载libfastcommon、fastdfs、fastdfs-nginx-module、fastdht、berkeley-db、nginx插件的源码
@@ -24,13 +24,13 @@ RUN cd ${HOME} \
 #        && curl -L https://github.com/happyfish100/fastdfs/archive/master.tar.gz -o fastdfs-master.tar.gz \
 #        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/master.tar.gz -o fastdfs-nginx-module-master.tar.gz \
 #        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
-#        && curl -L http://nginx.org/download/nginx-1.19.1.tar.gz -o nginx-1.19.1.tar.gz \
+#        && curl -L http://nginx.org/download/nginx-1.20.1.tar.gz -o nginx-1.20.1.tar.gz \
 #        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
 #        && tar xvf libfastcommon-master.tar.gz \
 #        && tar xvf fastdfs-master.tar.gz \
 #        && tar xvf fastdfs-nginx-module-master.tar.gz \
 #        && tar xvf fastdht-master.tar.gz \
-#        && tar xvf nginx-1.19.1.tar.gz \
+#        && tar xvf nginx-1.20.1.tar.gz \
 #        && tar xvf db-18.1.32.tar.gz
 
 # 安装libfastcommon
@@ -69,7 +69,7 @@ RUN     cd /etc/fdfs/ \
 # 获取nginx源码，与fastdfs插件一起编译
 RUN     cd ${HOME} \
         && chmod u+x ${HOME}/fastdfs-nginx-module-master/src/config \
-        && cd nginx-1.19.1 \
+        && cd nginx-1.20.1 \
         && ./configure --add-module=${HOME}/fastdfs-nginx-module-master/src \
         && make && make install
 
