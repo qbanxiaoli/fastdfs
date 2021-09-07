@@ -38,6 +38,11 @@
 ```
  /usr/local/bin/fdhtd /etc/fdht/fdhtd.conf restart
 ```
+ 重启nginx
+```
+ /usr/local/nginx/sbin/nginx -t
+ /usr/local/nginx/sbin/nginx -s reload
+```
  查看storage状态
 ```
  fdfs_monitor /etc/fdfs/client.conf

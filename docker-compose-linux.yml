@@ -17,8 +17,17 @@ services:
       FDHT_PORT: 11411
       # docker所在的宿主机内网地址，默认使用eth0网卡的地址
       IP: 192.168.0.105
+      # 防盗链配置
+      # 是否做token检查，缺省值为false
+      CHECK_TOKEN: 0
+      # 生成token的有效时长，默认900s
+      TOKEN_TTL: 900
+      # 生成token的密钥
+      SECRET_KEY: FastDFS1234567890
+      # token检查失败，返回的本地文件内容，可以通过文件挂载的方式进行修改
+      TOKEN_CHECK_FAIL: /etc/fdfs/anti-steal.jpg
     volumes:
-    # 将本地目录映射到docker容器内的fastdfs数据存储目录，将fastdfs文件存储到主机上，以免每次重建docker容器，之前存储的文件就丢失了。
-    - ～/fastdfs:/var/local
+      # 将本地目录映射到docker容器内的fastdfs数据存储目录，将fastdfs文件存储到主机上，以免每次重建docker容器，之前存储的文件就丢失了。
+      - ～/fastdfs:/var/local
     # 网络模式为host，可不暴露端口，即直接使用宿主机的网络端口，只适用于linux系统
     network_mode: host

@@ -15,7 +15,7 @@ RUN cd ${HOME} \
     && tar xvf fastdfs-master.tar.gz \
     && tar xvf fastdfs-nginx-module-master.tar.gz \
     && tar xvf fastdht-master.tar.gz \
-    && tar xvf nginx-1.20.1.tar.gz \
+    && tar xvf nginx-1.21.2.tar.gz \
     && tar xvf db-18.1.32.tar.gz
 
 # 下载libfastcommon、fastdfs、fastdfs-nginx-module、fastdht、berkeley-db、nginx插件的源码
@@ -24,13 +24,13 @@ RUN cd ${HOME} \
 #        && curl -L https://github.com/happyfish100/fastdfs/archive/master.tar.gz -o fastdfs-master.tar.gz \
 #        && curl -L https://github.com/happyfish100/fastdfs-nginx-module/archive/master.tar.gz -o fastdfs-nginx-module-master.tar.gz \
 #        && curl -L https://github.com/happyfish100/fastdht/archive/master.tar.gz -o fastdht-master.tar.gz \
-#        && curl -L http://nginx.org/download/nginx-1.20.1.tar.gz -o nginx-1.20.1.tar.gz \
+#        && curl -L http://nginx.org/download/nginx-1.21.2.tar.gz -o nginx-1.21.2.tar.gz \
 #        && wget --http-user=username --http-passwd=password https://edelivery.oracle.com/akam/otn/berkeley-db/db-18.1.32.tar.gz \
 #        && tar xvf libfastcommon-master.tar.gz \
 #        && tar xvf fastdfs-master.tar.gz \
 #        && tar xvf fastdfs-nginx-module-master.tar.gz \
 #        && tar xvf fastdht-master.tar.gz \
-#        && tar xvf nginx-1.20.1.tar.gz \
+#        && tar xvf nginx-1.21.2.tar.gz \
 #        && tar xvf db-18.1.32.tar.gz
 
 # 安装libfastcommon
@@ -69,7 +69,7 @@ RUN     cd /etc/fdfs/ \
 # 获取nginx源码，与fastdfs插件一起编译
 RUN     cd ${HOME} \
         && chmod u+x ${HOME}/fastdfs-nginx-module-master/src/config \
-        && cd nginx-1.20.1 \
+        && cd nginx-1.21.2 \
         && ./configure --add-module=${HOME}/fastdfs-nginx-module-master/src \
         && make && make install
 
@@ -84,6 +84,7 @@ RUN     cp ${HOME}/fastdfs-nginx-module-master/src/mod_fastdfs.conf /etc/fdfs/ \
            worker_connections  1024;\n\
            }\n\
            http {\n\
+           server_tokens off;\n\
            include       mime.types;\n\
            default_type  application/octet-stream;\n\
            server {\n\
@@ -105,6 +106,16 @@ ENV TZ Asia/Shanghai
 RUN apk add -U tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# 防盗链参数配置
+# 是否做token检查，缺省值为false
+ENV CHECK_TOKEN false
+# 生成token的有效时长，默认900s
+ENV TOKEN_TTL 900
+# 生成token的密钥
+ENV SECRET_KEY FastDFS1234567890
+# token检查失败，返回的本地文件内容
+ENV TOKEN_CHECK_FAIL /etc/fdfs/anti-steal.jpg
+
 # 配置启动脚本，在启动时中根据环境变量替换nginx端口、fastdfs端口
 # 默认nginx端口
 ENV WEB_PORT 80
@@ -116,6 +127,10 @@ ENV STORAGE_PORT 23000
 ENV FDHT_PORT 11411
 # 创建启动脚本
 RUN echo -e "\
+sed -i \"s/http.anti_steal.check_token=.*$/http.anti_steal.check_token=\$CHECK_TOKEN/g\" /etc/fdfs/http.conf; \n\
+sed -i \"s/http.anti_steal.token_ttl=.*$/http.anti_steal.token_ttl=\$TOKEN_TTL/g\" /etc/fdfs/http.conf; \n\
+sed -i \"s/http.anti_steal.secret_key=.*$/http.anti_steal.secret_key=\$SECRET_KEY/g\" /etc/fdfs/http.conf; \n\
+sed -i \"s|/home/yuqing/fastdfs/conf/anti-steal.jpg|\$TOKEN_CHECK_FAIL|g\" /etc/fdfs/http.conf; \n\
 mkdir -p /var/local/fdfs/storage/data /var/local/fdfs/tracker /var/local/fdht; \n\
 sed -i \"s/listen\ .*$/listen\ \$WEB_PORT;/g\" /usr/local/nginx/conf/nginx.conf; \n\
 sed -i \"s/http.server_port=.*$/http.server_port=\$WEB_PORT/g\" /etc/fdfs/storage.conf; \n\
